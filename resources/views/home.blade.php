@@ -27,6 +27,7 @@
                 <div class="card-body">
 
                     <a href="{{ route('zone.index') }}" class="btn btn-dark">ZONE</a>
+                    <a href="{{ route('region.index') }}" class="btn btn-dark">Region</a>
 
                 </div>
             </div>

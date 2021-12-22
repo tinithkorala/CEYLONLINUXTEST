@@ -10,4 +10,11 @@ class Zone extends Model
     use HasFactory;
 
     protected $fillable = ['zone_code', 'zone_long_description', 'zone_short_description'];
+
+    public function region() {
+
+        return $this->hasMany(Region::class);
+
+    }
+    
 }

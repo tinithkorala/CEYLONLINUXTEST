@@ -3,6 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ZoneController;
+use App\Http\Controllers\RegionController;
+
 
 
 /*
@@ -29,3 +31,6 @@ Route::get('/getZoneControllerView', [PagesController::class, 'getZoneController
 
 // Zone routes
 Route::resource('/zone', ZoneController::class);
+
+// Region routes
+Route::resource('/region', RegionController::class);

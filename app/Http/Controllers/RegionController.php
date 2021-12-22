@@ -4,9 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Region;
 use App\Models\Zone;
 
-class ZoneController extends Controller
+class RegionController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,8 +16,8 @@ class ZoneController extends Controller
      */
     public function index()
     {
-        $allZones = Zone::all();
-        return view('zone.indexZone')->with('allZones', $allZones);
+        $allRegions = Region::all();
+        return view('region.indexRegion')->with('allRegions', $allRegions);
     }
 
     /**
@@ -25,9 +26,10 @@ class ZoneController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function create()
-    {   
-        $concat_id = $this->generateZoneCode();
-        return view('zone.createZone')->with('concat_id', $concat_id);
+    {
+        $allZones = Zone::all();
+        $concat_id = $this->generateRegionCode();
+        return view('region.createRegion')->with('allZones', $allZones)->with('concat_id', $concat_id);
     }
 
     /**
@@ -39,21 +41,20 @@ class ZoneController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'zoneCode' => 'required',
-            'zoneLongDescription' => 'required',
-            'zoneShortDescription' => 'required'
+            'zone' => 'required',
+            'regionCode' => 'required',
+            'regionName' => 'required'
         ]);
 
-        $ZoneCode = $this->generateZoneCode();
+        $RegionCode = $this->generateRegionCode();
 
-        Zone::create([
-            'zone_code' => $ZoneCode,
-            'zone_long_description' => $request->input('zoneLongDescription'),
-            'zone_short_description' => $request->input('zoneShortDescription')
+        Region::create([
+            'region_code' => $RegionCode,
+            'region_name' => $request->input('regionName'),
+            'zone_id' => $request->input('zone')
         ]);
 
-        return redirect()->route('zone.index')->with('success_status','Zone Creadted');
-
+        return redirect()->route('region.index')->with('success_status','Region Creadted');
     }
 
     /**
@@ -75,8 +76,9 @@ class ZoneController extends Controller
      */
     public function edit($id)
     {
-        $zone = Zone::where('id', $id)->first();
-        return view('zone.editZone')->with('zone', $zone);
+        $allZones = Zone::all();
+        $region = Region::where('id', $id)->first();
+        return view('region.editRegion')->with('allZones', $allZones)->with('region', $region);
     }
 
     /**
@@ -89,17 +91,19 @@ class ZoneController extends Controller
     public function update(Request $request, $id)
     {
         $validated = $request->validate([
-            'zoneCode' => 'required',
-            'zoneLongDescription' => 'required',
-            'zoneShortDescription' => 'required'
+            'zone' => 'required',
+            'regionCode' => 'required',
+            'regionName' => 'required'
         ]);
 
-        Zone::where('id', $id)->update([
-            'zone_long_description' => $request->input('zoneLongDescription'),
-            'zone_short_description' => $request->input('zoneShortDescription')
+        $RegionCode = $this->generateRegionCode();
+
+        Region::where('id', $id)->update([
+            'region_name' => $request->input('regionName'),
+            'zone_id' => $request->input('zone')
         ]);
 
-        return redirect()->route('zone.index')->with('success_status','Zone Updated');
+        return redirect()->route('region.index')->with('success_status','Region Updated');
     }
 
     /**
@@ -113,20 +117,20 @@ class ZoneController extends Controller
         //
     }
 
-    public function generateZoneCode() {
+    public function generateRegionCode() {
 
-        $max_id_result = DB::select('SELECT MAX(id) as id FROM zones');
+        $max_id_result = DB::select('SELECT MAX(id) as id FROM regions');
         $current_max_id = $max_id_result[0]->id;
-        $auto_generated_max_id = DB::select("SELECT id, LPAD(id,5,'0') as Num FROM zones WHERE id = '$current_max_id'");
+        $auto_generated_max_id = DB::select("SELECT id, LPAD(id,5,'0') as Num FROM regions WHERE id = '$current_max_id'");
         // dd(count($auto_generated_max_id));
         if(count($auto_generated_max_id) == 0) {
 
-            $concat_id = 'Z-00001';
+            $concat_id = 'R-00001';
 
         }else {
 
             $incremented_id = str_pad(intval($auto_generated_max_id[0]->Num) + 1, strlen($auto_generated_max_id[0]->Num), '0', STR_PAD_LEFT);
-            $concat_id = 'Z-'.$incremented_id;
+            $concat_id = 'R-'.$incremented_id;
 
         }
 
