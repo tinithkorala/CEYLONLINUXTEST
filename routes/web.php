@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\RegionController;
+use App\Http\Controllers\TerritoryController;
 
 
 
@@ -34,3 +35,6 @@ Route::resource('/zone', ZoneController::class);
 
 // Region routes
 Route::resource('/region', RegionController::class);
+
+// Territory routes
+Route::resource('/territory', TerritoryController::class);

@@ -16,5 +16,11 @@ class Zone extends Model
         return $this->hasMany(Region::class);
 
     }
+
+    public function territory() {
+
+        return $this->hasMany(Territory::class);
+
+    }
     
 }

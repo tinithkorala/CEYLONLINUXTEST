@@ -2,8 +2,8 @@
 
 @section('content')
 <div class="container">
-    <h1>Zone CRUD</h1> 
-    <a href="{{ route('zone.create') }}" class="btn btn-primary btn-sm">Add Zone</a>
+    <h1>Territory CRUD</h1> 
+    <a href="{{ route('territory.create') }}" class="btn btn-primary btn-sm">Add Region</a>
 
     <div class="col-md-8">
         <div class="card-body">
@@ -21,20 +21,22 @@
                 <tr>
                 <th scope="col">#</th>
                 <th scope="col">Zone Code</th>
-                <th scope="col">Zone Long Description</th>
-                <th scope="col">Short Description</th>
+                <th scope="col">Region Code</th>
+                <th scope="col">Territory Code</th>
+                <th scope="col">Territory Name</th>
                 <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($allZones as $key => $zone)
+                @foreach ($allTerritory as $key => $territory)
                 <tr>
-                    <th scope="row">{{ $key + 1}}</th>
-                    <td>{{ $zone->zone_code }}</td>
-                    <td>{{ $zone->zone_long_description }}</td>
-                    <td>{{ $zone->zone_short_description }}</td>
+                    <th scope="row">{{ $key + 1 }}</th>
+                    <td>{{ $territory->zone->zone_code }}</td>
+                    <td>{{ $territory->region->region_code }}</td>
+                    <td>{{ $territory->territory_code }}</td>
+                    <td>{{ $territory->territory_name }}</td>
                     <td>
-                        <a class="btn btn-warning" href="{{ route('zone.edit', ['zone' => $zone->id]) }}">Edit</a>
+                        <a class="btn btn-warning" href="{{ route('territory.edit', ['territory' => $territory->id]) }}">Edit</a>
                     </td>
                 </tr>
                 @endforeach

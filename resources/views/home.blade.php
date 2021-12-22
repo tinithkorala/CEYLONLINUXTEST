@@ -28,6 +28,7 @@
 
                     <a href="{{ route('zone.index') }}" class="btn btn-dark">ZONE</a>
                     <a href="{{ route('region.index') }}" class="btn btn-dark">Region</a>
+                    <a href="{{ route('territory.index') }}" class="btn btn-dark">Territory</a>
 
                 </div>
             </div>
