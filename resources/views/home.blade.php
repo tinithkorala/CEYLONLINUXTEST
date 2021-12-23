@@ -18,6 +18,16 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-8">
+            <div class="card-body">
+                @if (session('success_status'))
+                    <div class="alert alert-success" role="alert" id="success-alert">
+                        {{ session('success_status') }}
+                    </div>
+                @endif
+            </div>
+        </div>
         
 
         <div class="col-md-8 mt-2">
@@ -29,12 +39,18 @@
                     <a href="{{ route('zone.index') }}" class="btn btn-dark">ZONE</a>
                     <a href="{{ route('region.index') }}" class="btn btn-dark">Region</a>
                     <a href="{{ route('territory.index') }}" class="btn btn-dark">Territory</a>
+                    <a href="{{ route('user.create') }}" class="btn btn-dark">User Create</a>
 
                 </div>
             </div>
         </div>
     </div>
-
     
 </div>
+
+<script>
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+    });
+</script>
 @endsection

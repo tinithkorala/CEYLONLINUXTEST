@@ -22,4 +22,10 @@ class Territory extends Model
         return $this->belongsTo(Region::class);
 
     }
+
+    public function user() {
+
+        return $this->hasMany(User::class);
+
+    }
 }

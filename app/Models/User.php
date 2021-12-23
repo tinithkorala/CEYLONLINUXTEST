@@ -19,7 +19,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'nic',
         'email',
+        'address',
+        'mobile',
+        'gender',
+        'territory_id',
+        'username',
         'password',
     ];
 
@@ -41,4 +47,10 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function territory() {
+
+        return $this->belongsTo(Territory::class);
+
+    }
 }

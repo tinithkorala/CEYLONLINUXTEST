@@ -5,6 +5,7 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\ZoneController;
 use App\Http\Controllers\RegionController;
 use App\Http\Controllers\TerritoryController;
+use App\Http\Controllers\UserController;
 
 
 
@@ -38,3 +39,6 @@ Route::resource('/region', RegionController::class);
 
 // Territory routes
 Route::resource('/territory', TerritoryController::class);
+
+// User routes
+Route::resource('/user', UserController::class);
