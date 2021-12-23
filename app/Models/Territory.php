@@ -28,4 +28,10 @@ class Territory extends Model
         return $this->hasMany(User::class);
 
     }
+
+    public function purchaseOrderHeader() {
+        
+        return $this->hasMany(PurchaseOrderHeader::class);
+        
+    }
 }

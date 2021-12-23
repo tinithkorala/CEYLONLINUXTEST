@@ -7,6 +7,7 @@ use App\Http\Controllers\RegionController;
 use App\Http\Controllers\TerritoryController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseOrderController;
 
 
 
@@ -46,3 +47,7 @@ Route::resource('/user', UserController::class);
 
 // Product routes
 Route::resource('/product', ProductController::class);
+
+// PurchaseOrder routes 
+Route::get('purchaseOrder/create', [PurchaseOrderController::class, 'create'])->name('purchaseOrder.create');
+Route::post('purchaseOrder', [PurchaseOrderController::class, 'store'])->name('purchaseOrder.store');

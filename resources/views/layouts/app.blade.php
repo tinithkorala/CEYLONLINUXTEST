@@ -19,8 +19,15 @@
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+    {{-- datepicker --}}
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+
     {{-- jquery --}}
     <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    {{-- jquery ui --}}
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
+
 </head>
 <body>
     <div id="app">
@@ -86,5 +93,8 @@
             @yield('content')
         </main>
     </div>
+
+    {{-- jquery ui  --}}
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 </body>
 </html>

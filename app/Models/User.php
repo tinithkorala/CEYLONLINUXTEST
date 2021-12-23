@@ -53,4 +53,10 @@ class User extends Authenticatable
         return $this->belongsTo(Territory::class);
 
     }
+
+    public function purchaseOrderHeader() {
+        
+        return $this->hasMany(PurchaseOrderHeader::class);
+        
+    }
 }

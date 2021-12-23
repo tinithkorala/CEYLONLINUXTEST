@@ -45,6 +45,20 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-md-8 mt-2">
+            <div class="card">
+                <div class="card-header"><h4>PURCHASE ORDER</h4></div>
+    
+                <div class="card-body">
+
+                    <a href="{{ route('purchaseOrder.create') }}" class="btn btn-dark">Add Purchase Order</a>
+
+                </div>
+            </div>
+        </div>
+
+
     </div>
     
 </div>

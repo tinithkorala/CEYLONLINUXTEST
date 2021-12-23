@@ -22,5 +22,11 @@ class Zone extends Model
         return $this->hasMany(Territory::class);
 
     }
+
+    public function purchaseOrderHeader() {
+        
+        return $this->hasMany(PurchaseOrderHeader::class);
+        
+    }
     
 }
