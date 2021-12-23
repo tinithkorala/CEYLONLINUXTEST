@@ -40,6 +40,7 @@
                     <a href="{{ route('region.index') }}" class="btn btn-dark">Region</a>
                     <a href="{{ route('territory.index') }}" class="btn btn-dark">Territory</a>
                     <a href="{{ route('user.create') }}" class="btn btn-dark">User Create</a>
+                    <a href="{{ route('product.create') }}" class="btn btn-dark">Product Create</a>
 
                 </div>
             </div>
