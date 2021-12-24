@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\PurchaseOrderHeader;
+use App\Models\PurchaseOrderItemList;
 use App\Models\Region;
 use App\Models\Territory;
 use App\Models\Zone;
@@ -16,6 +18,7 @@ class PurchaseOrderController extends Controller
         $allZones = Zone::all();
         $allRegions = Region::all();
         $allTerritory = Territory::all();
+        $allProducts = Product::all();
         $concat_id = $this->generatePOCode();
         $allUsers = DB::select("SELECT * FROM users WHERE usertype = '1' ");
 
@@ -23,11 +26,14 @@ class PurchaseOrderController extends Controller
                                                         ->with('allRegions', $allRegions)
                                                         ->with('allTerritory', $allTerritory)
                                                         ->with('allUsers', $allUsers)
+                                                        ->with('allProducts', $allProducts)
                                                         ->with('concat_id', $concat_id);
 
     }
 
     public function store(Request $request) {
+
+        // dd($request->all());
 
         $validated = $request->validate([
             'zone' => 'required',
@@ -50,7 +56,45 @@ class PurchaseOrderController extends Controller
                         'remark' => $request->input('remark'),
                     ]);
 
-        echo $header_id->id;
+        $last_insert_id = $header_id->id;
+
+        $row_count = $request->input("row_count");
+
+        for($i = 0; $i <= $row_count; $i++) {
+
+            $old_qty = "";
+            $new_qty = "";
+            $qty_diff = "";
+            $product_id = "";
+
+            $old_qty = $request->input('qty_'.$i);
+            $new_qty = $request->input('enter_qty_'.$i);
+
+            $product_id = $request->input('product_id_'.$i);
+
+            if($new_qty !== 0 && !empty($product_id)) {
+
+                $qty_diff = $old_qty - $new_qty;
+
+                Product::where('id', $product_id)->update([
+                    'weightVolume' => $qty_diff,
+                ]);
+
+            }
+
+
+            $PurchaseOrderItemList_obj = new PurchaseOrderItemList();
+            $PurchaseOrderItemList_obj->purchase_order_header_id = $last_insert_id;
+            $PurchaseOrderItemList_obj->product_id = $product_id;
+            $PurchaseOrderItemList_obj->enter_qty = $new_qty;
+            $PurchaseOrderItemList_obj->total_price = $request->input('calc_total_'.$i);    
+            $PurchaseOrderItemList_obj->save();
+            
+        }
+
+        return redirect()->route('home')->with('success_status','PurchaseOrder Creadted');
+
+        
 
     }
 

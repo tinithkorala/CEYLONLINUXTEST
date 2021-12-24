@@ -42,4 +42,10 @@ class PurchaseOrderHeader extends Model
         return $this->belongsTo(User::class);
 
     }
+
+    public function purchaseOrderItemList() {
+
+        return $this->hasMany(PurchaseOrderItemList::class);
+
+    }
 }

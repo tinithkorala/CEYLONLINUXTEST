@@ -18,4 +18,10 @@ class Product extends Model
         'weightVolume',
         'unit'
     ];
+
+    public function purchaseOrderItemList() {
+
+        return $this->hasMany(PurchaseOrderItemList::class);
+        
+    }
 }

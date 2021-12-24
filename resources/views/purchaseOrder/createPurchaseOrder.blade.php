@@ -99,7 +99,68 @@
 
         {{-- form header end --}}
 
+        {{-- form grid start --}}
 
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th scope="col">SKU CODE</th>
+                    <th scope="col">SKU NAME</th>
+                    <th scope="col">UNIT PRICE</th>
+                    <th scope="col">AVB QTY</th>
+                    <th scope="col">ENTER QTY</th>
+                    <th scope="col">UNITS</th>
+                    <th scope="col">TOTAL PRICE</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($allProducts as $key => $product)
+                    <tr id="tr_{{ $key }}">
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="hidden" name="product_id_{{ $key }}" id="product_id_{{ $key }}" value="{{ $product->id }}">
+                                <input type="text" name="sku_code_{{ $key }}" id="sku_code_{{ $key }}" value="{{ $product->sku_code }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="sku_name_{{ $key }}" id="sku_name_{{ $key }}" value="{{ $product->sku_name }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="MRP_{{ $key }}" id="MRP_{{ $key }}" value="{{ number_format((float)$product->MRP, 2, '.', '') }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="text" name="qty_{{ $key }}" id="qty_{{ $key }}" value="{{ $product->weightVolume }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" name="enter_qty_{{ $key }}" id="enter_qty_{{ $key }}" onblur="checkQtyValidation({{ $key }});" onkeyup=" calculateTotal({{ $key }})" min="0" max="{{ $product->weightVolume }}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="text" readonly name="calc_units_{{ $key }}" id="calc_units_{{ $key }}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                                <input type="hidden" name="units__name_{{ $key }}" id="units__name_{{ $key }}" value="{{ $product->unit }}">
+                            </div>
+                        </th>
+                        <th>
+                            <div class="input-group input-group-sm">
+                                <input type="text" readonly name="calc_total_{{ $key }}" id="calc_total_{{ $key }}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
+                            </div>
+                        </th>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+        
+        {{-- form grid start --}}
+
+        <input type="hidden" name="row_count" value="{{ $key }}">
 
         <button type="submit" class="btn btn-success mt-4">Save</button>
     </form>
@@ -115,5 +176,53 @@
         });
 
     } );
+</script>
+<script>
+    function checkQtyValidation(key) {
+
+        let concat_unit = "";
+        
+        let product_avb_qty = document.getElementById("qty_"+key).value;
+        let product_enter_qty = document.getElementById("enter_qty_"+key).value;
+
+        let product_units__name = document.getElementById("units__name_"+key).value;
+
+        // console.log("product_avb_qty "+product_avb_qty);
+        // console.log("product_enter_qty "+product_enter_qty);
+
+        let float_product_avb_qty = parseFloat(product_avb_qty);
+        let float_product_enter_qty = parseFloat(product_enter_qty);
+
+        if(float_product_avb_qty < float_product_enter_qty) {
+
+            alert("You cannot add " +float_product_enter_qty+ " , AVB QTY is "+float_product_avb_qty);
+            document.getElementById("enter_qty_"+key).value = 0;
+        }else {
+
+            concat_unit = float_product_enter_qty+" "+product_units__name;
+            document.getElementById("calc_units_"+key).value = concat_unit;
+        }
+
+    }
+
+
+    function calculateTotal(key) {
+
+        let product_avb_qty = document.getElementById("qty_"+key).value;
+        let product_enter_qty = document.getElementById("enter_qty_"+key).value;
+        let product_MRP = document.getElementById("MRP_"+key).value;
+
+        let float_product_avb_qty = parseFloat(product_avb_qty);
+        let float_product_enter_qty = parseFloat(product_enter_qty);
+        let float_product_MRP = parseFloat(product_MRP);
+
+        let total = "";
+
+        total = float_product_enter_qty * float_product_MRP;
+        document.getElementById("calc_total_"+key).value = total.toFixed(2);
+
+    }
+
+    
 </script>
 @endsection
