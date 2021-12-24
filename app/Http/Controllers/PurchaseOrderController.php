@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Invoice;
 use App\Models\Product;
 use App\Models\PurchaseOrderHeader;
 use App\Models\PurchaseOrderItemList;
@@ -114,8 +115,6 @@ class PurchaseOrderController extends Controller
 
         return redirect()->route('home')->with('success_status','PurchaseOrder Creadted');
 
-        
-
     }
 
     public function generatePOCode() {
@@ -203,6 +202,61 @@ class PurchaseOrderController extends Controller
         $result = $query->get();
 
         return json_encode($result);
+
+    }
+
+    public function convertInv(Request $request) {
+        
+        $checkBoxArray = $request->checkbox;
+
+        if(isset($checkBoxArray) && is_array($checkBoxArray)) {
+
+            $invoice_code = $this->generateInvoiceCode();
+
+            $po_array = [];
+
+            foreach($checkBoxArray as $checkBox) {
+    
+                $invoice_obj = new Invoice();
+                $invoice_obj->invoice_code = $invoice_code;
+                $invoice_obj->purchase_order_header_id = $checkBox;
+                $invoice_obj->save();
+
+                $po = $invoice_obj->purchaseOrderHeader->po_number;
+                array_push($po_array, $po);
+
+                $po_list = implode(', ', $po_array);
+    
+            }
+
+            return redirect()->route('purchaseOrder.index')->with('success_status', 'These PO(s) converted to invoice '.$po_list);
+
+        }else {
+            
+            return redirect()->route('purchaseOrder.index')->with('warning_status','Please Check at least one checkbox');
+
+        }
+
+    }
+
+    public function generateInvoiceCode() {
+
+        $max_id_result = DB::select('SELECT MAX(id) as id FROM invoices');
+        $current_max_id = $max_id_result[0]->id;
+        $auto_generated_max_id = DB::select("SELECT id, LPAD(id,5,'0') as Num FROM invoices WHERE id = '$current_max_id'");
+        // dd(count($auto_generated_max_id));
+        if(count($auto_generated_max_id) == 0) {
+
+            $concat_id = 'INV-00001';
+
+        }else {
+
+            $incremented_id = str_pad(intval($auto_generated_max_id[0]->Num) + 1, strlen($auto_generated_max_id[0]->Num), '0', STR_PAD_LEFT);
+            $concat_id = 'INV-'.$incremented_id;
+
+        }
+
+        return $concat_id;
 
     }
 

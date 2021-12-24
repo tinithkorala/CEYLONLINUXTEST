@@ -2,9 +2,29 @@
 
 @section('content')
 <div class="container">
-    <h2>Purchase Order Create</h2> 
+    <h2>Purchase Order Create</h2>
+    
+    <div class="col-md-8">
+        <div class="card-body">
+            @if (session('success_status'))
+                <div class="alert alert-success" role="alert" id="success-alert">
+                    {{ session('success_status') }}
+                </div>
+            @endif
+        </div>
+    </div>
 
-    <form action="{{ route('purchaseOrder.store') }}" method="POST">
+    <div class="col-md-8">
+        <div class="card-body">
+            @if (session('warning_status'))
+                <div class="alert alert-warning" role="alert" id="success-alert">
+                    {{ session('warning_status') }}
+                </div>
+            @endif
+        </div>
+    </div>
+
+    <form action="{{ url('/convertInv') }}" method="POST">
         @csrf
         {{-- form header start --}}
 
@@ -85,6 +105,12 @@
         <table class="table mt-5">
             <thead>
                 <tr>
+                    <th>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" id="mainCheckBox">
+                            <label class="form-check-label">Check All</label>
+                        </div>
+                    </th>
                     <th scope="col">Region</th>
                     <th scope="col">Territory</th>
                     <th scope="col">Distributor</th>
@@ -122,6 +148,10 @@
         });
 
     } );
+
+    window.onload = function() {
+        getGridData();
+    };
 </script>
 
 <script>
@@ -146,7 +176,6 @@
              
             },
             success: function(data){
-                console.log(data);
                 var str = "";
 
                 var json_value = JSON.parse(data);
@@ -164,6 +193,12 @@
                     let id = json_value[i].id;
 
                     str +=  "<tr>"+
+                                "<td>"+
+                                    "<div class='form-check'>"+
+                                        "<input class='form-check-input' type='checkbox' name='checkbox[]' id='checkbox_"+i+"' value='"+id+"'>"+
+                                        "<label class='form-check-label' for='flexCheckDefault'></label>"+
+                                    "</div>"+
+                                "</td>"+
                                 "<td>"+region_name+"</td>"+
                                 "<td>"+territory_name+"</td>"+
                                 "<td>"+name+"</td>"+
@@ -175,7 +210,6 @@
                             "</tr>";
 
                 }
-                console.log(str);
                 $('#tbody').html(str);
             }
         });
@@ -183,9 +217,22 @@
 
     }
 
-    function timeFromartAmPm() {
-
-    }
 </script>
-    
+ 
+<script>
+    $('#mainCheckBox').click(function() {
+        if ($(this).is(':checked')) {
+            $('input:checkbox').attr('checked', true);
+        } else {
+            $('input:checkbox').attr('checked', false);
+        }
+    });
+</script>
+
+<script>
+    $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+        $("#success-alert").slideUp(500);
+    });
+</script>
+
 @endsection

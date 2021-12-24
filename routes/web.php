@@ -50,7 +50,9 @@ Route::resource('/product', ProductController::class);
 
 // PurchaseOrder routes 
 Route::get('purchaseOrder', [PurchaseOrderController::class, 'index'])->name('purchaseOrder.index');
-Route::get('purchaseOrder/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('purchaseOrder.show');
 Route::get('purchaseOrder/create', [PurchaseOrderController::class, 'create'])->name('purchaseOrder.create');
+Route::get('purchaseOrder/{purchaseOrder}', [PurchaseOrderController::class, 'show'])->name('purchaseOrder.show');
 Route::post('purchaseOrder', [PurchaseOrderController::class, 'store'])->name('purchaseOrder.store');
+
 Route::get('/poList', [PurchaseOrderController::class, 'poList'])->name('purchaseOrder.poList');
+Route::post('/convertInv', [PurchaseOrderController::class, 'convertInv']);
