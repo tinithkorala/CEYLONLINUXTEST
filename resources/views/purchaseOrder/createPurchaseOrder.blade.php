@@ -205,6 +205,7 @@
 
     }
 
+    let total_cost = 0.00;
 
     function calculateTotal(key) {
 

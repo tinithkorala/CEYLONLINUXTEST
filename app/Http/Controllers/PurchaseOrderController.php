@@ -13,6 +13,20 @@ use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderController extends Controller
 {
+
+    public function index() {
+
+        $allRegions = Region::all();
+        $allTerritory = Territory::all();
+        $allPoList = PurchaseOrderHeader::all();
+
+        return view('purchaseOrder.indexPurchaseOrder')->with('allRegions', $allRegions)
+                                                        ->with('allTerritory', $allTerritory)
+                                                        ->with('allPoList', $allPoList);
+                                                      
+        
+    }
+
     public function create() {
 
         $allZones = Zone::all();
@@ -28,6 +42,12 @@ class PurchaseOrderController extends Controller
                                                         ->with('allUsers', $allUsers)
                                                         ->with('allProducts', $allProducts)
                                                         ->with('concat_id', $concat_id);
+
+    }
+
+    public function show($id) {
+
+        return $id; 
 
     }
 
@@ -118,4 +138,73 @@ class PurchaseOrderController extends Controller
         return $concat_id;
 
     }
+
+    public function poList(Request $request) {
+
+        $region = $request->input('region');
+        $territory = $request->input('territory');
+        $poNumber = $request->input('poNumber');
+        $fromDate = $request->input('fromDate');
+        $toDate = $request->input('toDate');
+        // echo $region."--".$territory."--".$poNumber."--".$fromDate."--".$toDate;
+
+        $query = DB::table('purchase_order_headers')
+                            ->join('purchase_order_item_lists', 'purchase_order_headers.id', '=', 'purchase_order_item_lists.purchase_order_header_id')
+                            ->join('regions', 'purchase_order_headers.region_id', '=', 'regions.id')
+                            ->join('territories', 'purchase_order_headers.territory_id', '=', 'territories.id')
+                            ->join('users', 'purchase_order_headers.user_id', '=', 'users.id')
+                            ->groupBy('purchase_order_headers.id');
+
+                            $query->select(
+                                'purchase_order_headers.id',
+                                'purchase_order_headers.po_date', 
+                                'purchase_order_headers.po_number', 
+                                'purchase_order_item_lists.total_price', 
+                                'regions.region_name', 
+                                'territories.territory_name', 
+                                'users.name',
+                                DB::raw('SUM(purchase_order_item_lists.total_price) as total_amount'),
+                                DB::raw("DATE_FORMAT(purchase_order_headers.updated_at, '%r') as timeAmPm")
+                            );
+
+
+                            if(!empty($region)) {
+
+                                $query->where('regions.id', '=', $region);
+
+                            }
+
+                            if(!empty($territory)) {
+
+                                $query->where('territories.id', '=', $territory);
+
+                            }
+
+                            if(!empty($territory)) {
+
+                                $query->where('territories.id', '=', $territory);
+
+                            }
+
+                            if(!empty($poNumber)) {
+
+                                $query->where('purchase_order_headers.id', '=', $poNumber);
+
+                            }
+
+                            if(!empty($fromDate) && !empty($toDate)) {
+
+                                $query->whereBetween('purchase_order_headers.po_date', [$fromDate, $toDate]);
+
+                            }
+
+                            
+
+        $result = $query->get();
+
+        return json_encode($result);
+
+    }
+
+    
 }

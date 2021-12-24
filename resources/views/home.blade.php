@@ -53,11 +53,11 @@
                 <div class="card-body">
 
                     <a href="{{ route('purchaseOrder.create') }}" class="btn btn-dark">Add Purchase Order</a>
+                    <a href="{{ route('purchaseOrder.index') }}" class="btn btn-dark">Add Purchase View</a>
 
                 </div>
             </div>
         </div>
-
 
     </div>
     
