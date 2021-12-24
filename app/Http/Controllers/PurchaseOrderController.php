@@ -152,6 +152,7 @@ class PurchaseOrderController extends Controller
                             ->join('regions', 'purchase_order_headers.region_id', '=', 'regions.id')
                             ->join('territories', 'purchase_order_headers.territory_id', '=', 'territories.id')
                             ->join('users', 'purchase_order_headers.user_id', '=', 'users.id')
+                            ->leftJoin('invoices', 'purchase_order_headers.id', '=', 'invoices.purchase_order_header_id')
                             ->groupBy('purchase_order_headers.id');
 
                             $query->select(
@@ -166,6 +167,7 @@ class PurchaseOrderController extends Controller
                                 DB::raw("DATE_FORMAT(purchase_order_headers.updated_at, '%r') as timeAmPm")
                             );
 
+                            $query->where('invoices.purchase_order_header_id', '=', null);
 
                             if(!empty($region)) {
 

@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Purchase Order Create</h2>
+    <h2>Purchase Order View</h2>
     
     <div class="col-md-8">
         <div class="card-body">
@@ -130,7 +130,7 @@
 
         {{-- <input type="hidden" name="row_count" value="{{ $key }}"> --}}
 
-        <button type="submit" class="btn btn-success mt-4">Save</button>
+        <button type="submit" class="btn btn-success mt-4">Convert To Invoice</button>
     </form>
 
     
