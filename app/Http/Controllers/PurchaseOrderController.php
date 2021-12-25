@@ -48,8 +48,22 @@ class PurchaseOrderController extends Controller
 
     public function show($id) {
 
-        return $id; 
+        $allZones = Zone::all();
+        $allRegions = Region::all();
+        $allTerritory = Territory::all();
+        $allProducts = Product::all();
+        $allUsers = DB::select("SELECT * FROM users WHERE usertype = '1' ");
 
+        $purchaseOrderHeader = PurchaseOrderHeader::where('id', '=', $id)->first();
+        $purchaseOrderItemList = PurchaseOrderItemList::where('purchase_order_header_id', '=', $purchaseOrderHeader->id)->get();
+
+        return view('purchaseOrder.showPurchaseOrder')->with('allZones', $allZones)
+                                                    ->with('allRegions', $allRegions)
+                                                    ->with('allTerritory', $allTerritory)
+                                                    ->with('allUsers', $allUsers)
+                                                    ->with('allProducts', $allProducts)
+                                                    ->with('purchaseOrderItemList', $purchaseOrderItemList)
+                                                    ->with('purchaseOrderHeader', $purchaseOrderHeader);
     }
 
     public function store(Request $request) {

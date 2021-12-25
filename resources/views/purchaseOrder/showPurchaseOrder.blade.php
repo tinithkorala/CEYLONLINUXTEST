@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2 class="text-center form-heading">Purchase Order</h2> 
+    <h2 class="text-center form-heading">Purchase Order {{ $purchaseOrderHeader->po_number }} View</h2> <a href="{{ route('purchaseOrder.index') }}" class="btn btn-primary btn-sm">Back</a>
 
     <form action="{{ route('purchaseOrder.store') }}" method="POST">
         @csrf
@@ -16,7 +16,7 @@
                     <select class="form-select" name="zone" id="zone">
                         <option value="" readonly>Select Zone</option>
                         @foreach ($allZones as $zone)
-                            <option value="{{ $zone->id }}">{{ $zone->zone_code }}</option>    
+                            <option value="{{ $zone->id }}" {{ $purchaseOrderHeader->zone_id == $zone->id ? "selected" : "" }}>{{ $zone->zone_code }}</option>    
                         @endforeach
                     </select>
                     @error('zone')
@@ -29,7 +29,7 @@
                     <select class="form-select" name="region" id="region">
                         <option value="" readonly>Select Region</option>
                         @foreach ($allRegions as $region)
-                            <option value="{{ $region->id }}">{{ $region->region_code }}</option>    
+                            <option value="{{ $region->id }}" {{ $purchaseOrderHeader->region_id == $region->id ? "selected" : "" }}>{{ $region->region_code }}</option>    
                         @endforeach
                     </select>
                     @error('region')
@@ -42,7 +42,7 @@
                     <select class="form-select" name="territory" id="territory">
                         <option value="" readonly>Select Territory</option>
                         @foreach ($allTerritory as $territory)
-                            <option value="{{ $territory->id }}" {{ (old('territory') == $territory->id ? "selected" : "") }} >{{ $territory->territory_code }}</option>    
+                            <option value="{{ $territory->id }}" {{ $purchaseOrderHeader->territory_id == $territory->id ? "selected" : "" }} >{{ $territory->territory_code }}</option>    
                         @endforeach
 
                     </select>
@@ -56,7 +56,7 @@
                     <select class="form-select" name="distributor" id="distributor">
                         <option value="" readonly>Select Distributor</option>
                         @foreach ($allUsers as $user)
-                            <option value="{{ $user->id }}">{{ $user->name }}</option>    
+                            <option value="{{ $user->id }}" {{ $purchaseOrderHeader->user_id == $user->id ? "selected" : "" }}>{{ $user->name }}</option>    
                         @endforeach
                     </select>
                     @error('distributor')
@@ -72,7 +72,7 @@
 
                 <div class="col-md-3">
                     <label for="date" class="form-label">Date</label>
-                    <input type="text" class="form-control" id="datepicker" name="date" value="{{ date('Y-m-d') }}">
+                    <input type="text" class="form-control" id="datepicker" name="date" value="{{ $purchaseOrderHeader->po_date }}">
                     @error('date')
                         <small class="fw-bold text-danger">{{ $message }}</small>    
                     @enderror
@@ -80,7 +80,7 @@
 
                 <div class="col-md-3">
                     <label for="poNumber" class="form-label">PO No</label>
-                    <input type="text" class="form-control" id="poNumber" name="poNumber" value="{{ $concat_id }}" readonly>
+                    <input type="text" class="form-control" id="poNumber" name="poNumber" value="{{ $purchaseOrderHeader->po_number }}" readonly>
                     @error('poNumber')
                         <small class="fw-bold text-danger">{{ $message }}</small>    
                     @enderror
@@ -88,7 +88,7 @@
 
                 <div class="col-md-3">
                     <label for="remark" class="form-label">Remark</label>
-                    <input type="text" class="form-control" id="remark" name="remark" value="">
+                    <input type="text" class="form-control" id="remark" name="remark" value="{{ $purchaseOrderHeader->remark }}">
                     @error('remark')
                         <small class="fw-bold text-danger">{{ $message }}</small>    
                     @enderror
@@ -114,45 +114,17 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($allProducts as $key => $product)
-                    <tr id="tr_{{ $key }}">
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="hidden" name="product_id_{{ $key }}" id="product_id_{{ $key }}" value="{{ $product->id }}">
-                                <input type="text" name="sku_code_{{ $key }}" id="sku_code_{{ $key }}" value="{{ $product->sku_code }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="sku_name_{{ $key }}" id="sku_name_{{ $key }}" value="{{ $product->sku_name }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="MRP_{{ $key }}" id="MRP_{{ $key }}" value="{{ number_format((float)$product->MRP, 2, '.', '') }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="text" name="qty_{{ $key }}" id="qty_{{ $key }}" value="{{ $product->weightVolume }}" readonly class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="number" class="form-control" name="enter_qty_{{ $key }}" id="enter_qty_{{ $key }}" onblur="checkQtyValidation({{ $key }});" onkeyup=" calculateTotal({{ $key }})" min="0" max="{{ $product->weightVolume }}" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="0"> 
-                            </div>
-                        </th>
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="text" readonly name="calc_units_{{ $key }}" id="calc_units_{{ $key }}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="0">
-                                <input type="hidden" name="units__name_{{ $key }}" id="units__name_{{ $key }}" value="{{ $product->unit }}">
-                            </div>
-                        </th>
-                        <th>
-                            <div class="input-group input-group-sm">
-                                <input type="text" readonly name="calc_total_{{ $key }}" id="calc_total_{{ $key }}" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm" value="0.00">
-                            </div>
-                        </th>
+                @foreach ($purchaseOrderItemList as $row)
+                    <tr>
+                        <th>{{ $row->product->sku_code }}</th>
+                        <th>{{ $row->product->sku_name }}</th>
+                        <th>{{ number_format((float)$row->product->MRP, 2, '.', '') }}</th>
+                        <th>{{ $row->product->weightVolume }}</th>
+                        <th>{{ $row->enter_qty }}</th>
+                        <th>{{ $row->enter_qty }} {{ $row->product->unit }}</th>
+                        <th>{{ number_format((float)$row->total_price, 2, '.', '') }}</th>
+                        
+                       
                     </tr>
                 @endforeach
             </tbody>
@@ -160,9 +132,7 @@
         
         {{-- form grid start --}}
 
-        <input type="hidden" name="row_count" value="{{ $key }}">
-
-        <button type="submit" class="btn btn-success mt-4">Save</button>
+        {{-- <button type="submit" class="btn btn-success mt-4">Save</button> --}}
     </form>
 
     
@@ -199,16 +169,8 @@
             document.getElementById("enter_qty_"+key).value = 0;
         }else {
 
-            if(Number.isNaN(float_product_enter_qty)){
-                float_product_enter_qty = 0;
-            }
-
             concat_unit = float_product_enter_qty+" "+product_units__name;
             document.getElementById("calc_units_"+key).value = concat_unit;
-        }
-
-        if(product_enter_qty == "") {
-            document.getElementById("enter_qty_"+key).value = 0;
         }
 
     }
@@ -228,13 +190,6 @@
         let total = "";
 
         total = float_product_enter_qty * float_product_MRP;
-        
-        if(Number.isNaN(total)){
-            total = 0;
-        }else {
-
-        }
-
         document.getElementById("calc_total_"+key).value = total.toFixed(2);
 
     }

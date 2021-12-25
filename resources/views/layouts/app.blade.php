@@ -28,6 +28,9 @@
     {{-- jquery ui --}}
     <link rel="stylesheet" href="//code.jquery.com/ui/1.13.0/themes/base/jquery-ui.css">
 
+    {{-- js export --}}
+    <script type="text/javascript" src="https://unpkg.com/xlsx@0.15.1/dist/xlsx.full.min.js"></script>
+
 </head>
 <body>
     <div id="app">

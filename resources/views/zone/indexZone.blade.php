@@ -2,10 +2,10 @@
 
 @section('content')
 <div class="container">
-    <h1>Zone CRUD</h1> 
+    <h1 class="text-center form-heading">Zone CRUD</h1> 
     <a href="{{ route('zone.create') }}" class="btn btn-primary btn-sm">Add Zone</a>
 
-    <div class="col-md-8">
+    <div class="col-md-12">
         <div class="card-body">
             @if (session('success_status'))
                 <div class="alert alert-success" role="alert" id="success-alert">
@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="col-md-8">
+    <div class="col-md-12">
         <table class="table">
             <thead>
                 <tr>

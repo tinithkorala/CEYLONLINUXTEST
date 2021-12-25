@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container">
-    <h2>Purchase Order View</h2>
+    <h2 class="text-center form-heading">Purchase Order View</h2>
     
     <div class="col-md-8">
         <div class="card-body">
@@ -35,7 +35,7 @@
 
                 <div class="col-md-2">
                     <label for="region" class="form-label">Region</label>
-                    <select class="form-select form-select-sm" name="region" id="region" onchange="getGridData();">
+                    <select class="form-select" name="region" id="region" onchange="getGridData();">
                         <option value="" readonly>Select Region</option>
                         @foreach ($allRegions as $region)
                             <option value="{{ $region->id }}">{{ $region->region_code }}</option>    
@@ -48,7 +48,7 @@
 
                 <div class="col-md-2">
                     <label for="territory" class="form-label">Territory</label>
-                    <select class="form-select form-select-sm" name="territory" id="territory" onchange="getGridData();">
+                    <select class="form-select" name="territory" id="territory" onchange="getGridData();">
                         <option value="" readonly>Select Territory</option>
                         @foreach ($allTerritory as $territory)
                             <option value="{{ $territory->id }}" {{ (old('territory') == $territory->id ? "selected" : "") }} >{{ $territory->territory_code }}</option>    
@@ -62,7 +62,7 @@
 
                 <div class="col-md-2">
                     <label for="poNumber" class="form-label">PO NO</label>
-                    <select class="form-select form-select-sm" name="poNumber" id="poNumber" onchange="getGridData();">
+                    <select class="form-select" name="poNumber" id="poNumber" onchange="getGridData();">
                         <option value="" readonly>Select PO NO</option>
                         @foreach ($allPoList as $po)
                             <option value="{{ $po->id }}">{{ $po->po_number }}</option>    
@@ -102,7 +102,7 @@
 
         {{-- form grid start --}}
 
-        <table class="table mt-5">
+        <table class="table mt-5" id="po_table">
             <thead>
                 <tr>
                     <th>
@@ -118,7 +118,7 @@
                     <th scope="col">Date</th>
                     <th scope="col">Time</th>
                     <th scope="col">Total</th>
-                    <th scope="col">Action</th>
+                    <th scope="col" class="remove">Action</th>
                 </tr>
             </thead>
             <tbody id="tbody">
@@ -130,7 +130,8 @@
 
         {{-- <input type="hidden" name="row_count" value="{{ $key }}"> --}}
 
-        <button type="submit" class="btn btn-success mt-4">Convert To Invoice</button>
+        <button type="submit" class="btn btn-info btn-sm mt-4">Convert To Invoice</button>
+        <button type="button" id="export_button" class="btn btn-success btn-sm mt-4">Export</button>
     </form>
 
     
@@ -206,8 +207,10 @@
                                 "<td>"+date+"</td>"+
                                 "<td>"+timeAmPm+"</td>"+
                                 "<td>"+total_amount.toFixed(2)+"</td>"+
-                                "<td><a href='{{ route('purchaseOrder.show', ['purchaseOrder' => '14']) }}' type='button' class='btn btn-secondary btn-sm'>View</a></td>"
+                                "<td><a href='/purchaseOrder/"+id+"' type='button' class='btn btn-secondary btn-sm'>View</a></td>"+
                             "</tr>";
+
+                            // "<td><a href='{{ route('purchaseOrder.show', ['purchaseOrder' => '"+id+"']) }}' type='button' class='btn btn-secondary btn-sm'>View</a></td>"+
 
                 }
                 $('#tbody').html(str);
@@ -235,4 +238,23 @@
     });
 </script>
 
+
+<script>
+    function html_table_to_excel(type)
+    {
+        var data = document.getElementById('po_table');
+
+        var file = XLSX.utils.table_to_book(data, {sheet: "sheet1"});
+
+        XLSX.write(file, { bookType: type, bookSST: true, type: 'base64' });
+
+        XLSX.writeFile(file, 'Purchase Order.' + type);
+    }
+
+    const export_button = document.getElementById('export_button');
+
+    export_button.addEventListener('click', () =>  {
+        html_table_to_excel('xlsx');
+    });
+</script>
 @endsection
