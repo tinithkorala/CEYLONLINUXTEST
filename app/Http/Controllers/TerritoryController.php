@@ -10,6 +10,11 @@ use App\Models\Territory;
 
 class TerritoryController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => []]);
+    }
     /**
      * Display a listing of the resource.
      *

@@ -9,6 +9,12 @@ use App\Models\Zone;
 
 class RegionController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => []]);
+    }
+    
     /**
      * Display a listing of the resource.
      *
